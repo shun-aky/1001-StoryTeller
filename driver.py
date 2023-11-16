@@ -1,9 +1,7 @@
 import cv2
 import os
 
-#os.system("sudo modprobe bcm2835-v412")
 os.system('sudo modprobe bcm2835-v4l2')
-#os.system('v4l2-ctl -p 40')
 
 FRAME_W = 320
 FRAME_H = 200
