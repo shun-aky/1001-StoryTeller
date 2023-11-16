@@ -1,21 +1,30 @@
 #import RPi.GPIO as GPIO
 import time
 from gpiozero import AngularServo, Device
-from gpiozero.pins.native import NativeFactory
-
-myFact= NativeFactory()
 
 PIN_1 = 17
-PIN_2 = 13
-PULS_FREQ = 50
+PIN_2 = 27
+HORIZONTAL_MIN = 0
+HORIZONTAL_MAX = 90
+VERTICAL_MIN = 0
+VERTICAL_MAX = 90
 
-#GPIO.setmode(GPIO.BOARD)
-#GPIO.setup(PIN_1, GPIO.OUT)
+class ServoComplex:
+	
+	def __init__(self):
+		self.servo_h = AngularServo(PIN_1, min_angle=HORIZONTAL_MIN, max_angle=HORIZONTAL_MAX)
+		self.servo_v = AngularServo(PIN_2, min_angle=VERTICAL_MIN, max_angle=VERTICAL_MAX)
+		
+	def move_horizontal(self, angle_h):
+		self.servo_h.angle = angle_h
+		
+	def move_vertical(self, angle_v):
+		self.servo_v.angle = angle_v
+		
+	def move_servos(self, angle_h, angle_v):
+		self.move_horizontal(move_h)
+		self.move_vertical(move_h)
 
-# servo_1 = GPIO.PWM(PIN_1, PULS_FREQ)
-
-servo_1 = AngularServo(17,min_angle=0,max_angle=90)
-servo_2 = AngularServo(27,min_angle=0,max_angle=90)
 
 print("start")
 servo_1.angle = 0
@@ -34,12 +43,3 @@ servo_1.angle = 30
 servo_2.angle = 60
 time.sleep(2)
 print("end")
-
-#servo_1.start(5)
-#time.sleep(2)
-#servo_1.ChangeDutyCycle(10)
-#time.sleep(2)
-#servo_1.ChangeDutyCycle(15)
-
-#servo_1.stop()
-#GPIO.cleanup()
