@@ -1,8 +1,6 @@
 import cv2
 import os
 
-os.system('sudo modprobe bcm2835-v4l2')
-
 FRAME_W = 320
 FRAME_H = 200
 HORIZONTAL_MAX = 70 # degree
