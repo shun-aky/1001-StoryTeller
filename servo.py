@@ -23,23 +23,22 @@ class ServoComplex:
 	def move_servos(self, angle_h, angle_v):
 		self.move_horizontal(angle_h)
 		self.move_vertical(angle_v)
-
-"""
-print("start")
-servo_1.angle = 0
-servo_2.angle = 90
-time.sleep(2)
-print("move1")
-servo_1.angle = 30
-servo_2.angle = 60
-time.sleep(2)
-print("move2")
-servo_1.angle = 60
-servo_2.angle = 30
-time.sleep(2)
-print("move3")
-servo_1.angle = 30
-servo_2.angle = 60
-time.sleep(2)
-print("end")
-"""
+		
+	def test(self):
+		print("Start Testing")
+		servo_h.angle = HORIZONTAL_MIN
+		servo_v.angle = VERTICAL_MIN
+		time.sleep(2)
+		print("Move1")
+		servo_h.angle = (HORIZONTAL_MIN + HORIZONTAL_MAX) / 2
+		servo_v.angle = (VERTICAL_MIN + VERTICAL_MAX) / 2
+		time.sleep(2)
+		print("Move2")
+		servo_h.angle = HORIZONTAL_MAX
+		servo_v.angle = VERTICAL_MAX
+		time.sleep(2)
+		print("Move3")
+		servo_h.angle = (HORIZONTAL_MIN + HORIZONTAL_MAX) / 2
+		servo_v.angle = (VERTICAL_MIN + VERTICAL_MAX) / 2
+		time.sleep(2)
+		print("Finish Testing")
