@@ -1,33 +1,33 @@
-from gtts import gTTS
-import os
+import requests
 
-FILE_PATH = "story.txt"
-
-
+FILE_URL = "https://raw.githubusercontent.com/shun-aky/1001-StoryTeller/master/story.txt?token=GHSAT0AAAAAACC5PKVEFGLKD7HCVXAGGHIKZK6OB2Q"
 
 class StoryTeller:
     def __init__(self) -> None:
         self.content = ""
 
     def get_story(self) -> None:
-        # Open the file in read mode
         try:
-            with open(file_path, "r") as file:
-                # Read the contents of the file
-                self.content = file.read()
-
-            if self.content != "":
+            # Extract the raw file URL from the GitHub repository URL
+            raw_url = FILE_URL.replace("github.com", "raw.githubusercontent.com").replace("/blob", "")
+            print(raw_url)
+            response = requests.get(FILE_URL)
+            if response.status_code == 200:
+                self.content = response.text
                 print("Got story successfully!")
+                print(self.content)
             else:
-                print("Opened the file successfully but it's empty.")
-
-            # convert text to mp3 file
+                print("Failed to get the story. Status code: ", response.status_code)
+        except requests.exceptions.RequestException as e:
+            print("Failed to get the story:", str(e))
         except:
             print("Failed to get the story.")
 
-    def make_mp3(self) -> None:
-        myobj = gTTS(text = self.content, lang = "en", slow = False)
-        myobj.save("story.mp3")
+    # def make_mp3(self) -> None:
+    #     # Rest of your code for converting text to mp3
 
-    def start_story(self):
+    # def start_story(self) -> None:
+    #     # Rest of your code for starting the story
 
+st = StoryTeller()
+st.get_story()
