@@ -1,7 +1,8 @@
 import requests
 import base64
+from gtts import gTTS
+import os
 
-FILE_URL = "https://raw.githubusercontent.com/shun-aky/1001-StoryTeller/master/story.txt?token=GHSAT0AAAAAACC5PKVEFGLKD7HCVXAGGHIKZK6OB2Q"
 FILE_URL = 'https://api.github.com/repos/shun-aky/1001-StoryTeller/contents/story.txt'
 
 class StoryTeller:
@@ -10,9 +11,6 @@ class StoryTeller:
 
     def get_story(self) -> None:
         try:
-            # Extract the raw file URL from the GitHub repository URL
-            raw_url = FILE_URL.replace("github.com", "raw.githubusercontent.com").replace("/blob", "")
-            print(raw_url)
             response = requests.get(FILE_URL)
             if response.status_code == 200:
                 content = response.json()["content"]
@@ -20,7 +18,6 @@ class StoryTeller:
                 content = base64.b64decode(content).decode("utf-8")
                 self.content = content
                 print("Got story successfully!")
-                print(self.content)
             else:
                 print("Failed to get the story. Status code: ", response.status_code)
         except requests.exceptions.RequestException as e:
@@ -28,11 +25,21 @@ class StoryTeller:
         except:
             print("Failed to get the story.")
 
-    # def make_mp3(self) -> None:
-    #     # Rest of your code for converting text to mp3
+    def make_mp3(self) -> None:
+        tts = gTTS(text=self.content, lang='en', slow=False)
+        tts.save("story.mp3")
+        print("Created story.mp3 file!")
 
-    # def start_story(self) -> None:
-    #     # Rest of your code for starting the story
+    def start_story(self) -> None:
+        print("Start playing story.mp3")
+        os.system("mpg123 story.mp3")
+        print("Finished playing story.mp3")
+
+    def __del__(self) -> None:
+        os.system("rm story.mp3")
+        print("story.mp3 deleted")
 
 st = StoryTeller()
 st.get_story()
+st.make_mp3()
+st.start_story()
