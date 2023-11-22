@@ -1,6 +1,7 @@
 import cv2
 import os
 from servo import ServoComplex
+from story_teller import StoryTeller
 
 os.system('sudo modprobe bcm2835-v4l2')
 
@@ -9,13 +10,6 @@ FRAME_H = 200
 HORIZONTAL_MAX = 70 # degree
 VERTICAL_MAX = 30 # degree
 
-
-FRAME_W = 320
-FRAME_H = 200
-HORIZONTAL_MAX = 70 # degree
-VERTICAL_MAX = 30 # degree
-
-cascPath = 'lbpcascade_frontalface.xml'
 cascPath = 'haarcascade_frontalface_default.xml'
 faceCascade = cv2.CascadeClassifier(cascPath)
 
