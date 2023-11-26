@@ -9,6 +9,7 @@ FILE_URL = 'https://api.github.com/repos/shun-aky/1001-StoryTeller/contents/stor
 class StoryTeller:
     def __init__(self) -> None:
         self.content = ""
+        self.player = MPyg123Player()
 
     def get_story(self) -> None:
         try:
@@ -27,19 +28,21 @@ class StoryTeller:
             print("Failed to get the story.")
 
     def make_mp3(self) -> None:
-        tts = gTTS(text=self.content, lang='en', slow=False)
-        tts.save("story.mp3")
+        print("Start creating story.mp3")
+        #tts = gTTS(text=self.content, lang='en', slow=False)
+        #tts.save("story.mp3")
         print("Created story.mp3 file!")
 
     def start_story(self) -> None:
         print("Start playing story.mp3")
-        os.system("mpg123 story.mp3")
+        #os.system("mpg123 story.mp3")
+        self.player.play_song("/home/pi1001/1001++/story.mp3")
         print("Finished playing story.mp3")
 
     # def pause_story(self) -> None:
 
     def __del__(self) -> None:
-        os.system("rm story.mp3")
+        #os.system("rm story.mp3")
         print("story.mp3 deleted")
 
 def test():
