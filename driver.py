@@ -1,6 +1,7 @@
 import cv2
 import os
 from servo import ServoComplex
+from story_teller import StoryTeller
 
 os.system('sudo modprobe bcm2835-v4l2')
 
