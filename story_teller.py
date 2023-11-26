@@ -2,6 +2,7 @@ import requests
 import base64
 from gtts import gTTS
 import os
+from mpyg321.MPyg123Player import MPyg123Player
 
 FILE_URL = 'https://api.github.com/repos/shun-aky/1001-StoryTeller/contents/story.txt'
 
@@ -35,11 +36,17 @@ class StoryTeller:
         os.system("mpg123 story.mp3")
         print("Finished playing story.mp3")
 
+    # def pause_story(self) -> None:
+
     def __del__(self) -> None:
         os.system("rm story.mp3")
         print("story.mp3 deleted")
 
-st = StoryTeller()
-st.get_story()
-st.make_mp3()
-st.start_story()
+def test():
+    st = StoryTeller()
+    st.get_story()
+    st.make_mp3()
+    st.start_story()
+
+if __name__ == '__main__':
+    test()

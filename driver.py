@@ -1,9 +1,9 @@
 import cv2
+from datetime import datetime
+import threading
 import os
 from servo import ServoComplex
 from story_teller import StoryTeller
-
-os.system('sudo modprobe bcm2835-v4l2')
 
 FRAME_W = 320
 FRAME_H = 200
@@ -11,20 +11,28 @@ HORIZONTAL_MAX = 70 # degree
 VERTICAL_MAX = 30 # degree
 
 cascPath = 'haarcascade_frontalface_default.xml'
-faceCascade = cv2.CascadeClassifier(cascPath)
 
-cap = cv2.VideoCapture(0)
-cap.set(cv2.CAP_PROP_FRAME_WIDTH,  320)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 200)
+def initialize():
+	global faceCascade, cap, servos, st
 
-servos = ServoComplex()
+	faceCascade = cv2.CascadeClassifier(cascPath)
 
-if not cap.isOpened():
-	print("error")
-	exit()
-else:
-	print("opened")
+	cap = cv2.VideoCapture(0)
+	if not cap.isOpened():
+		print("error in opening Video Capture")
+		exit()
 
+	cap.set(cv2.CAP_PROP_FRAME_WIDTH,  320)
+	cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 200)
+
+	servos = ServoComplex()
+
+	st = StoryTeller()
+	st.get_story()
+	st.make_mp3()
+    
+
+initialize()
 while True:
 	ret, frame = cap.read()
 	
@@ -38,6 +46,8 @@ while True:
     # Do face detection to search for faces from these captures frames
 	faces = faceCascade.detectMultiScale(frame, 1.1, 3, 0, (10, 10))
     
+	if len(faces) != 0:
+		thread = threading.Thread(target=st.start_story, args=(1,))
 	for (x, y, w, h) in faces:
         # Draw a green rectangle around the face (There is a lot of control to be had here, for example If you want a bigger border change 4 to 8)
 		cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 4)

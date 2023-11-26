@@ -26,19 +26,19 @@ class ServoComplex:
 		
 	def test(self):
 		print("Start Testing")
-		servo_h.angle = HORIZONTAL_MIN
-		servo_v.angle = VERTICAL_MIN
+		self.servo_h.angle = HORIZONTAL_MIN
+		self.servo_v.angle = VERTICAL_MIN
 		time.sleep(2)
 		print("Move1")
-		servo_h.angle = (HORIZONTAL_MIN + HORIZONTAL_MAX) / 2
-		servo_v.angle = (VERTICAL_MIN + VERTICAL_MAX) / 2
+		self.servo_h.angle = (HORIZONTAL_MIN + HORIZONTAL_MAX) / 2
+		self.servo_v.angle = (VERTICAL_MIN + VERTICAL_MAX) / 2
 		time.sleep(2)
 		print("Move2")
-		servo_h.angle = HORIZONTAL_MAX
-		servo_v.angle = VERTICAL_MAX
+		self.servo_h.angle = HORIZONTAL_MAX
+		self.servo_v.angle = VERTICAL_MAX
 		time.sleep(2)
 		print("Move3")
-		servo_h.angle = (HORIZONTAL_MIN + HORIZONTAL_MAX) / 2
-		servo_v.angle = (VERTICAL_MIN + VERTICAL_MAX) / 2
+		self.servo_h.angle = (HORIZONTAL_MIN + HORIZONTAL_MAX) / 2
+		self.servo_v.angle = (VERTICAL_MIN + VERTICAL_MAX) / 2
 		time.sleep(2)
 		print("Finish Testing")
