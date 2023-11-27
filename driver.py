@@ -1,5 +1,5 @@
 import cv2
-from datetime import datetime
+from datetime import datetime, time
 import threading
 import os
 from servo import ServoComplex
@@ -10,6 +10,7 @@ FRAME_W = 320
 FRAME_H = 200
 HORIZONTAL_MAX = 70 # degree
 VERTICAL_MAX = 30 # degree
+TIME_THRESHOLD = 10
 
 cascPath = 'haarcascade_frontalface_default.xml'
 
@@ -42,7 +43,7 @@ def destructor():
 	print("SEE YOU")
     
 def main():
-	global faceCascade, cap, servos, st
+	global faceCascade, cap, servos, st, lastFaceDetected
 	# in case it's forced to be quit, destructor has to be run
 	atexit.register(destructor)
 	initialize()
@@ -58,10 +59,18 @@ def main():
 		
 		# Do face detection to search for faces from these captures frames
 		faces = faceCascade.detectMultiScale(frame, 1.1, 3, 0, (10, 10))
-		
-		if len(faces) != 0:
-			thread = threading.Thread(target=st.start_story, args=(1,))
+
+		# it might have to be a global variable
+		if len(faces) != 0 and not st.is_story_running():
+			thread = threading.Thread(target=st.start_story)
+			thread.start()
+
+		if len(faces) == 0 and st.is_story_running():
+			timeDiff = datetime.now() - lastFaceDetected
+			if timeDiff.seconds > TIME_THRESHOLD:
+				st.stop_story()
 		for (x, y, w, h) in faces:
+			lastFaceDetected = datetime.now()
 			# Draw a green rectangle around the face (There is a lot of control to be had here, for example If you want a bigger border change 4 to 8)
 			cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 4)
 			# Get the centre of the face

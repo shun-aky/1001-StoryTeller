@@ -3,8 +3,12 @@ import base64
 from gtts import gTTS
 import os
 from mpyg321.MPyg123Player import MPyg123Player
+from mpyg321.consts import PlayerStatus
+import threading
+import time
 
 FILE_URL = 'https://api.github.com/repos/shun-aky/1001-StoryTeller/contents/story.txt'
+STORY_PATH = "Users/shuna/University of Michigan/1001+/StoryTeller/1001-StoryTeller/story.mp3"
 
 class StoryTeller:
     def __init__(self) -> None:
@@ -35,11 +39,25 @@ class StoryTeller:
 
     def start_story(self) -> None:
         print("Start playing story.mp3")
-        #os.system("mpg123 story.mp3")
-        self.player.play_song("/home/pi1001/1001++/story.mp3")
+        self.player.play_song("story.mp3")
+        while self.is_story_running():
+            True
         print("Finished playing story.mp3")
 
-    # def pause_story(self) -> None:
+    def pause_story(self) -> None:
+        self.player.pause()
+        print("Story paused")
+
+    def resume_story(self) -> None:
+        self.player.resume()
+        print("Story resumed")
+
+    def stop_story(self) -> None:
+        self.player.stop()
+        print("Story stopped")
+
+    def is_story_running(self) -> bool:
+        return self.player.status == PlayerStatus.PLAYING
 
     def __del__(self) -> None:
         #os.system("rm story.mp3")
