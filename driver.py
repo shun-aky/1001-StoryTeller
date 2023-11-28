@@ -1,21 +1,32 @@
 import cv2
-from datetime import datetime, time
+from datetime import datetime
 import threading
 import os
 from servo import ServoComplex
 from story_teller import StoryTeller
 import atexit
+import time
 
 FRAME_W = 320
 FRAME_H = 200
 HORIZONTAL_MAX = 70 # degree
 VERTICAL_MAX = 30 # degree
 TIME_THRESHOLD = 10
+STEPS_TO_TURN = 10
+SECOND_PER_DEGREE = 1 / 90 # it takes 1 second to turn 90 degrees
+# I shouldn't constant how many seconds it should take for turning
+# but rather we should have a ratio (how many angles per second) and 
+# use the ratio to move the face.
+
+# also this should happen only when there are multiple faces
+# if there is only one face, you can do it normally
+# I think it's a good practice to do that even if there is only one face
+
 
 cascPath = 'haarcascade_frontalface_default.xml'
 
 def initialize():
-	global faceCascade, cap, servos, st
+	global faceCascade, cap, servos, st, current_h, current_v
 
 	faceCascade = cv2.CascadeClassifier(cascPath)
 
@@ -33,6 +44,9 @@ def initialize():
 	st.get_story()
 	st.make_mp3()
 	
+	current_h = 0
+	current_v = 0
+	
 	print("Finished initialization")
 	
 def destructor():
@@ -43,7 +57,7 @@ def destructor():
 	print("SEE YOU")
     
 def main():
-	global faceCascade, cap, servos, st, lastFaceDetected
+	global faceCascade, cap, servos, st, lastFaceDetected, current_h, current_v
 	# in case it's forced to be quit, destructor has to be run
 	atexit.register(destructor)
 	initialize()
@@ -60,7 +74,8 @@ def main():
 		# Do face detection to search for faces from these captures frames
 		faces = faceCascade.detectMultiScale(frame, 1.1, 3, 0, (10, 10))
 
-		# it might have to be a global variable
+		# story telling takes up power
+		'''
 		if len(faces) != 0 and not st.is_story_running():
 			thread = threading.Thread(target=st.start_story)
 			thread.start()
@@ -69,6 +84,8 @@ def main():
 			timeDiff = datetime.now() - lastFaceDetected
 			if timeDiff.seconds > TIME_THRESHOLD:
 				st.stop_story()
+		'''
+
 		for (x, y, w, h) in faces:
 			lastFaceDetected = datetime.now()
 			# Draw a green rectangle around the face (There is a lot of control to be had here, for example If you want a bigger border change 4 to 8)
@@ -85,11 +102,26 @@ def main():
 			turn_horizontal = turn_x * HORIZONTAL_MAX
 			turn_vertical = turn_y * VERTICAL_MAX
 			
-			servos.move_servos(turn_horizontal, turn_vertical)
+			diff_h = turn_horizontal - current_h
+			diff_v = turn_vertical - current_v
+			time_to_turn = abs(diff_h) * SECOND_PER_DEGREE
+			
+			for i in range(0, STEPS_TO_TURN):
+				servos.move_servos(diff_h * i / STEPS_TO_TURN, diff_v * i / STEPS_TO_TURN)
+				sleep_time = time_to_turn / STEPS_TO_TURN
+				print(f'sleep time: {sleep_time}')
+				time.sleep(sleep_time)
+				
+			current_h = turn_horizontal
+			current_v = turn_vertical
+			
+			# servos.move_servos(turn_horizontal, turn_vertical)
+			# stay at the position for 2 seconds
+			time.sleep(1)
 			
 		cv2.imshow("Video", frame)
 		
-		if cv2.waitKey(1) & 0xFF == ord('q'):
+		if 0xFF == ord('q'):
 			break
 			
 	destructor()

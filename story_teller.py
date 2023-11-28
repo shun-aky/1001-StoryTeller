@@ -67,7 +67,16 @@ def test():
     st = StoryTeller()
     st.get_story()
     st.make_mp3()
-    st.start_story()
-
+    # st.start_story()
+    
+    # thread testing
+    thread = threading.Thread(target=st.start_story)
+    thread.start()
+    time.sleep(10)
+    print(st.is_story_running())
+    st.stop_story()
+    print(st.is_story_running())
+    
+    
 if __name__ == '__main__':
     test()
